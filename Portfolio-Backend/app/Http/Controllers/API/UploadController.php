@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,12 +13,20 @@ class UploadController extends Controller
     {
         $request->validate([
             'file' => 'required|file|max:10240',
+            'folder' => 'required|string',
         ]);
 
         $file = $request->file('file');
-        $fileName = time() . '_' . Str::slug($file->getClientOriginalName());
+        $folder = $request->input('folder');
         
-        $path = Storage::disk('s3')->putFileAs('uploads', $file, $fileName);
+        $fileName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) 
+            . '.' . $file->getClientOriginalExtension();
+        
+            $path = Storage::disk('s3')->putFileAs(
+                $folder, 
+                $file, 
+                $fileName
+            );
         $url = Storage::disk('s3')->url($path);
         
         return response()->json([

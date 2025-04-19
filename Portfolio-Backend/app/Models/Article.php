@@ -10,8 +10,15 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'slug', 'excerpt', 'content', 'featured_image',
-        'category_id', 'reading_time', 'published', 'published_at'
+        'title',
+        'slug',
+        'excerpt',
+        'content',
+        'featured_image',
+        'category_id',
+        'reading_time',
+        'published',
+        'published_at'
     ];
 
     protected $casts = [
@@ -27,5 +34,10 @@ class Article extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }
